@@ -47,6 +47,18 @@
       width: 122px;
     }
   </style>
+
+<script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+<script>
+  window.TrackJS && TrackJS.install({ 
+    token: "0fc9fc5dce1a40b5a123bb46bcdedd0e"
+    // for more configuration options, see https://docs.trackjs.com
+  });
+
+  TrackJS.track('Testing TrackJS!');
+                        
+</script>
+                        
 </head>
 
 <body>
@@ -68,26 +80,33 @@
       </fieldset>
     </form>
 
+    <!-- step 2 -->
     <section id="error-btns">
-      <button>Console Log</button>
-      <button>Console Error</button>
-      <button>Console Count</button>
-      <button>Console Warn</button>
-      <button>Console Assert</button>
-      <button>Console Clear</button>
-      <button>Console Dir</button>
-      <button>Console dirxml</button>
-      <button>Console Group Start</button>
-      <button>Console Group End</button>
-      <button>Console Table</button>
-      <button>Start Timer</button>
-      <button>End Timer</button>
-      <button>Console Trace</button>
-      <button>Trigger a Global Error</button>
+      <button onclick="console.log('Console Log Demo!')"> Console Log </button>
+      <button onclick="console.error('Console Error Demo!')"> Console Error</button>
+      <button onclick = "console.count('Count Demo')"> Console Count </button>
+      <button onclick = "console.warn('Warn Demo')"> Console Warn </button>
+      <button onclick = "console.assert( 2 + 2, '2 + 2 is 5')">Console Assert</button>
+      <button onclick = "console.clear()"> Console Clear </button>
+      <button onclick = "console.dir(document.body)">Console Dir</button>
+      <button onclick = "console.dirxml(document.body)">Console dirxml</button>
+      <button onclick = "GroupStartdemo()">Console Group Start</button>
+      <button onclick = "GroupEnddemo()">Console Group End</button>
+      <button onclick = "demoTable()">Console Table</button>
+      <button onclick = "TimerStartdemo()">Start Timer</button>
+      <button onclick = "TimerEnddemo()">End Timer</button>
+      <button onclick = "TraceDemo()">Console Trace</button>
+      <button onclick = "GlobalErrorDemo()">Trigger a Global Error</button>
     </section>
   </main>
 
   <script>
+     class TypeErrorDemo extends Error {
+      constructor(message) {
+        super(message); 
+        this.name = "TypeErrorDemo";
+      }
+    }
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -95,6 +114,35 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
+      //output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      console.log(typeof firstNum);
+      try {
+        /** step3 Throw REGULAR error for the first entry*/
+        if (isNaN(firstNum)){
+          throw new TypeError("TypeError: First entry is not a number");
+        }
+
+       /** step4 Throw CUSTOM error for second entry*/
+        if (isNaN(secondNum)){
+          throw new TypeErrorDemo("CustomTypeError: Second entry is not a number");
+        }
+      }
+      
+      catch (err) {
+        if (err instanceof TypeError) {
+          alert("TypeError: First entry is not a number");
+        } 
+        else if (err instanceof WrongTypeError){
+          alert("CustomTypeError: Second entry is not a number");
+        }
+        else{
+          throw err;
+        }
+      }
+      finally {
+        alert("errors have been checked");
+      }
+
       output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
     });
 
@@ -102,6 +150,44 @@
 
     // Start your code here
     // You may move this JS to another file if you wish
+    function GroupStartdemo() {
+      console.group("Group Start Demo");
+    }
+
+    function GroupEnddemo() {
+      console.groupEnd("Group End Demo");
+    }
+
+    function demoTable() {
+      console.table([
+        { 'RecipeType': "Soup", 'ApplianceRequired?': false, 'Cuisine':"Asian" },
+        { 'RecipeType': "Dish", 'ApplianceRequired?': true, 'Cuisine':"Italian" },
+        { 'RecipeType': "Entry", 'ApplianceRequired?': true, 'Cuisine':"French" }
+      ]);
+    }
+
+    function TimerStartdemo() {
+      console.log("Timer starts");
+      console.time();
+    }
+
+    function TimerEnddemo() {
+      console.log("Timer ends");
+      console.timeEnd();
+    }
+
+    function FunctionTrace() {
+      console.trace();
+    }
+
+    function TraceDemo() {
+      FunctionTrace();
+    }
+
+    function GlobalErrorDemo(){
+      // gives a referenceError as a global error
+      console.log(globalError);
+    }
   </script>
 </body>
 
